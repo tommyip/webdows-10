@@ -4,8 +4,10 @@
   <p>Edit <code>components/HelloWorld.vue</code> to test hot module replacement.</p>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, computed } from 'vue';
+
+export default defineComponent({
   name: 'HelloWorld',
   props: {
     msg: String
@@ -14,6 +16,6 @@ export default {
     return {
       count: 0
     }
-  }
-}
+  },
+});
 </script>
