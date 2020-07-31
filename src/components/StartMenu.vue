@@ -22,9 +22,6 @@ export default defineComponent({
   position: absolute;
   left: 0;
   bottom: var(--task-bar-height);
-
-  border-top: 1px solid rgb(105, 105, 105);
-  border-right: 1px solid rgb(105, 105, 105);
-  background-color: rgb(44, 44, 44);
+  background-color: var(--light-bg);
 }
 </style>

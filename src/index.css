@@ -1,5 +1,7 @@
 :root {
   --text-dark-bg: #fff;
+  --text-light-bg: #000;
+  --light-bg: rgb(216, 216, 216);
   --task-bar-height: 45px;
 }
 
@@ -15,5 +17,7 @@ body {
   font-size: 17px;
   position: relative;
 
-  background-color: rgb(32, 44, 211);
+  background-image: url(assets/wallpaper.jpg);
+  background-size: cover;
+  background-position: center;
 }

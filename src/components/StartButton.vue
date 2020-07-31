@@ -39,13 +39,13 @@ button {
 }
 
 button:hover {
-  background-color: rgb(117, 117, 117);
+  background-color: rgb(192, 192, 192);
 }
 
 svg {
   width: 50%;
   height: 50%;
-  fill: var(--text-dark-bg);
+  fill: var(--light-dark-bg);
 }
 
 .start-menu {

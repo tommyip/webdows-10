@@ -18,7 +18,7 @@ export default defineComponent({
 
 <style scoped>
 .task-bar {
-  background-color: rgb(19, 19, 19);
+  background-color: var(--light-bg);
   color: var(--text-dark-bg);
 
   display: flex;
