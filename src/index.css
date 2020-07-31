@@ -1,5 +1,6 @@
 :root {
   --text-dark-bg: #fff;
+  --task-bar-height: 45px;
 }
 
 body {
@@ -12,4 +13,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 17px;
+  position: relative;
+
+  background-color: rgb(32, 44, 211);
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="webdows">
+    <div class="desktop"></div>
     <TaskBar class="task-bar" />
   </div>
 </template>
@@ -17,8 +18,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.webdows {
+  height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.desktop {
+  flex: 1;
+}
+
 .task-bar {
-  width: 100%;
-  height: 45px;
+  height: var(--task-bar-height);
 }
 </style>

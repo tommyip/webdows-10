@@ -1,8 +1,6 @@
 <template>
   <div class="task-bar">
-    <div class="start-button">
-      <StartButton />
-    </div>
+    <StartButton />
   </div>
 </template>
 
@@ -26,5 +24,10 @@ export default defineComponent({
   display: flex;
   flex-flow: row nowrap;
   align-items: stretch;
+}
+
+.task-bar > * {
+  height: 100%;
+  padding: 0;
 }
 </style>
