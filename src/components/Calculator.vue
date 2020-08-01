@@ -2,7 +2,7 @@
   <Application title="Calculator" :width="350" :height="450">
     <main>
       <div class="display-container">
-        <div class="display-text">0</div>
+        <div class="display-text">{{ resultDisplay }}</div>
       </div>
       <div class="buttons-container">
         <button>%</button>
@@ -14,29 +14,29 @@
           <sub>𝑥</sub>
         </button>
 
-        <button>CE</button>
-        <button>C</button>
-        <button><b-icon-backspace /></button>
+        <button @click="clearEntryPressed">CE</button>
+        <button @click="clearPressed">C</button>
+        <button @click="deletePressed"><b-icon-backspace /></button>
         <button class="bit-bigger">÷</button>
 
-        <button class="number">7</button>
-        <button class="number">8</button>
-        <button class="number">9</button>
+        <button @click="digitPressed(7)" class="number">7</button>
+        <button @click="digitPressed(8)" class="number">8</button>
+        <button @click="digitPressed(9)" class="number">9</button>
         <button class="bit-bigger">×</button>
 
-        <button class="number">4</button>
-        <button class="number">5</button>
-        <button class="number">6</button>
+        <button @click="digitPressed(4)" class="number">4</button>
+        <button @click="digitPressed(5)" class="number">5</button>
+        <button @click="digitPressed(6)" class="number">6</button>
         <button class="bit-bigger">−</button>
 
-        <button class="number">1</button>
-        <button class="number">2</button>
-        <button class="number">3</button>
+        <button @click="digitPressed(1)" class="number">1</button>
+        <button @click="digitPressed(2)" class="number">2</button>
+        <button @click="digitPressed(3)" class="number">3</button>
         <button class="bit-bigger">+</button>
 
         <button class="bit-bigger">±</button>
-        <button class="number">0</button>
-        <button class="bit-bigger">.</button>
+        <button @click="digitPressed(0)" class="number">0</button>
+        <button @click="dotPressed" class="bit-bigger">.</button>
         <button class="bit-bigger">=</button>
       </div>
     </main>
@@ -44,13 +44,80 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import Application from './Application.vue';
 import BIconBackspace from './bootstrap_icons/BIconBackspace.vue';
+
+type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export default defineComponent({
   name: 'Calculator',
   components: { Application, BIconBackspace },
+  setup() {
+    const resultIsComputed = ref(false);
+    const result = ref(0);
+    const workingInteger = ref(0);
+    const workingFractional = ref<digit[]>([]);
+    const resultDisplay = computed(() => {
+      if (resultIsComputed.value) {
+        return result.value.toLocaleString('en', { useGrouping: true });
+      } else {
+        // Could have dangling 0s
+        let out = workingInteger.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        if (workingFractional.value.length > 0) {
+          out += '.' + workingFractional.value.join('');
+        }
+        return out;
+      }
+    });
+
+    let enteringFractional = false;
+    const digitPressed = (digit: digit) => {
+      if (!resultIsComputed.value) {
+        if (enteringFractional) {
+          workingFractional.value.push(digit);
+        } else {
+          workingInteger.value = workingInteger.value * 10 + digit;
+        }
+      }
+    };
+
+    const dotPressed = () => {
+      if (!resultIsComputed.value && workingFractional.value.length === 0) {
+        enteringFractional = !enteringFractional;
+      }
+    };
+
+    const deletePressed = () => {
+      if (workingFractional.value.length > 0) {
+        workingFractional.value.pop();
+        if (workingFractional.value.length === 0) {
+          enteringFractional = false;
+        }
+      } else {
+        workingInteger.value = Math.trunc(workingInteger.value / 10);
+      }
+    };
+
+    const clearEntryPressed = () => {
+      result.value = 0;
+      enteringFractional = false;
+    };
+
+    const clearPressed = () => {
+      result.value = 0;
+      enteringFractional = false;
+    }
+
+    return {
+      resultDisplay,
+      digitPressed,
+      dotPressed,
+      deletePressed,
+      clearEntryPressed,
+      clearPressed,
+    };
+  },
 });
 </script>
 

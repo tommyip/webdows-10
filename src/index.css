@@ -2,8 +2,11 @@
   --text-dark-bg: #fff;
   --text-light-bg: #000;
   --light-bg: #d8d8d8;
-  --light-bg-hover: #bbbbbb;
+  --light-bg-hover: #afafaf;
   --task-bar-height: 45px;
+
+  --windows-blue: #00a2ed;
+  --fluent-pale-red: #E74856;
 }
 
 body {

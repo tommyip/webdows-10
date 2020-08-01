@@ -124,18 +124,14 @@ header,
 }
 
 header {
-  height: 40px;
+  height: 30px;
 }
 
 .title-container {
   width: 100%;
   padding-left: 0.75rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   user-select: none;
-}
-
-.controls > *:hover {
-  background-color: var(--light-bg-hover);
 }
 
 .minimize,
@@ -144,6 +140,15 @@ header {
   font-size: 1.1rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+}
+
+.minimize:hover,
+.maximize:hover {
+  background-color: var(--light-bg-hover);
+}
+
+.close:hover {
+  background-color: #E74856;
 }
 
 main {
