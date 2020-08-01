@@ -2,6 +2,7 @@
   --text-dark-bg: #fff;
   --text-light-bg: #000;
   --light-bg: #d8d8d8;
+  --light-bg-hover: #bbbbbb;
   --task-bar-height: 45px;
 }
 
@@ -30,7 +31,7 @@ body {
   align-items: center;
 }
 
-.btn-reset {
+button {
   background: none;
   color: inherit;
   border: none;

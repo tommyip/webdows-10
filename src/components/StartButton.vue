@@ -29,22 +29,17 @@ export default defineComponent({
 button {
   display: block;
   width: 50px;
-  background-color: inherit;
-  border: 0;
-  outline: none;
-  box-shadow: none;
   /* Align the webdow icon center better */
   padding-top: 3px;
-  cursor: pointer;
 }
 
 button:hover {
-  background-color: #c0c0c0;
+  background-color: var(--light-bg-hover);
 }
 
 svg {
-  width: 50%;
-  height: 50%;
+  width: 40%;
+  height: 40%;
   fill: var(--light-dark-bg);
 }
 

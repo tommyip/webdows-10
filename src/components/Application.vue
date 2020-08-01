@@ -2,21 +2,21 @@
   <div class="container" :style="windowStyling">
     <header>
       <div
-        @mousedown="onHeaderMouseDown"
-        @mousemove="onHeaderMouseMove"
-        @mouseup="onHeaderMouseUp"
+        @mousedown.stop="onHeaderMouseDown"
+        @mousemove.stop="onHeaderMouseMove"
+        @mouseup.stop="onHeaderMouseUp"
         class="title-container v-center"
       >
         <div>{{ title }}</div>
       </div>
       <div class="controls">
-        <button class="minimize v-center btn-reset">
+        <button class="minimize v-center">
           <b-icon-dash />
         </button>
-        <button class="maximize v-center btn-reset">
+        <button class="maximize v-center">
           <b-icon-stop />
         </button>
-        <button class="close v-center btn-reset">
+        <button class="close v-center">
           <b-icon-x />
         </button>
       </div>
@@ -59,23 +59,24 @@ export default defineComponent({
     const height = ref(props.height);
     const locX = ref(50);
     const locY = ref(50);
+    const isDragging = ref(false);
     const windowStyling = computed(() => {
       return {
         width: width.value + 'px',
         height: height.value + 'px',
         transform: `translate(${locX.value}px, ${locY.value}px)`,
+        cursor: isDragging.value ? 'grabbing' : 'initial',
       };
     });
 
     /* Window dragging logic */
-    let isDragging = false;
     let initialMouseX: number;
     let initialMouseY: number;
     let initialWindowX: number;
     let initialWindowY: number;
     const onHeaderMouseDown = (event: MouseEvent) => {
       if (event.button === 0) {
-        isDragging = true;
+        isDragging.value = true;
         initialMouseX = event.clientX;
         initialMouseY = event.clientY;
         initialWindowX = locX.value;
@@ -83,14 +84,14 @@ export default defineComponent({
       }
     };
     const onHeaderMouseMove = (event: MouseEvent) => {
-      if (event.button === 0 && isDragging) {
+      if (event.button === 0 && isDragging.value) {
         locX.value = initialWindowX + (event.clientX - initialMouseX);
         locY.value = initialWindowY + (event.clientY - initialMouseY);
       }
     };
     const onHeaderMouseUp = (event: MouseEvent) => {
-      if (event.button === 0 && isDragging) {
-        isDragging = false;
+      if (event.button === 0 && isDragging.value) {
+        isDragging.value = false;
       }
     };
 
@@ -134,7 +135,7 @@ header {
 }
 
 .controls > *:hover {
-  background-color: #bbbbbb;
+  background-color: var(--light-bg-hover);
 }
 
 .minimize,
@@ -147,7 +148,6 @@ header {
 
 main {
   flex: 1;
-  padding: 0.25rem;
-  background: #dfdfdf;
+  padding: 0.4rem;
 }
 </style>
