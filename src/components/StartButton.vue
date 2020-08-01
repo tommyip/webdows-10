@@ -39,7 +39,7 @@ button {
 }
 
 button:hover {
-  background-color: rgb(192, 192, 192);
+  background-color: #c0c0c0;
 }
 
 svg {

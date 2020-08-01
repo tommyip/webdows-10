@@ -1,17 +1,18 @@
 :root {
   --text-dark-bg: #fff;
   --text-light-bg: #000;
-  --light-bg: rgb(216, 216, 216);
+  --light-bg: #d8d8d8;
   --task-bar-height: 45px;
 }
 
 body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 17px;
@@ -20,4 +21,20 @@ body {
   background-image: url(assets/wallpaper.jpg);
   background-size: cover;
   background-position: center;
+}
+
+/* Utility classes */
+
+.v-center {
+  display: flex;
+  align-items: center;
+}
+
+.btn-reset {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: inherit;
 }

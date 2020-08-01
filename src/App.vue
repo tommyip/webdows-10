@@ -1,18 +1,22 @@
 <template>
   <div class="webdows">
-    <div class="desktop"></div>
+    <div class="desktop">
+      <Calculator />
+    </div>
     <TaskBar class="task-bar" />
   </div>
 </template>
 
 <script lang='ts'>
-import { defineComponent } from 'vue';
+import { defineComponent, provide } from 'vue';
 import TaskBar from './components/TaskBar.vue';
+import Calculator from './components/Calculator.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
     TaskBar,
+    Calculator,
   },
 });
 </script>
@@ -26,6 +30,8 @@ export default defineComponent({
 
 .desktop {
   flex: 1;
+  position: relative;
+  display: block;
 }
 
 .task-bar {
