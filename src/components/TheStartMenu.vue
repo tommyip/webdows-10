@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'StartMenu',
+  name: 'TheStartMenu',
   props: {
     isOpen: Boolean,
   },

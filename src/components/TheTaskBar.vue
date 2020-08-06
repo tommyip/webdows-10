@@ -1,17 +1,17 @@
 <template>
   <div class="task-bar">
-    <StartButton />
+    <TheStartButton />
   </div>
 </template>
 
 <script lang='ts'>
 import { defineComponent, computed } from 'vue';
-import StartButton from './StartButton.vue';
+import TheStartButton from './TheStartButton.vue';
 
 export default defineComponent({
-  name: 'TaskBar',
+  name: 'TheTaskBar',
   components: {
-    StartButton,
+    TheStartButton,
   },
 });
 </script>

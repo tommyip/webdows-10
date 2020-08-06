@@ -47,7 +47,7 @@
 <script lang='ts'>
 import { defineComponent, ref, computed, onMounted, reactive } from 'vue';
 import Application from '../Application.vue';
-import BIconBackspace from '../bootstrap_icons/BIconBackspace.vue';
+import BIconBackspace from '../BootstrapIcons/BIconBackspace.vue';
 import { digit, WorkingNumber, prettify } from './structs';
 
 enum BinOp {
@@ -58,7 +58,7 @@ enum BinOp {
 }
 
 export default defineComponent({
-  name: 'Calculator',
+  name: 'CalculatorApplication',
   components: { Application, BIconBackspace },
   setup() {
     const workingNumber = reactive(new WorkingNumber());

@@ -1,22 +1,22 @@
 <template>
   <div class="webdows">
     <div class="desktop">
-      <Calculator />
+      <CalculatorApplication />
     </div>
-    <TaskBar class="task-bar" />
+    <TheTaskBar class="task-bar" />
   </div>
 </template>
 
 <script lang='ts'>
 import { defineComponent, provide } from 'vue';
-import TaskBar from './components/TaskBar.vue';
-import Calculator from './components/Calculator/Calculator.vue';
+import TheTaskBar from './components/TheTaskBar.vue';
+import CalculatorApplication from './components/CalculatorApplication/CalculatorApplication.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
-    TaskBar,
-    Calculator,
+    TheTaskBar,
+    CalculatorApplication,
   },
 });
 </script>

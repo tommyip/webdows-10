@@ -31,9 +31,9 @@
 
 <script lang='ts'>
 import { defineComponent, ref, computed } from 'vue';
-import BIconDash from './bootstrap_icons/BIconDash.vue';
-import BIconStop from './bootstrap_icons/BIconStop.vue';
-import BIconX from './bootstrap_icons/BIconX.vue';
+import BIconDash from './BootstrapIcons/BIconDash.vue';
+import BIconStop from './BootstrapIcons/BIconStop.vue';
+import BIconX from './BootstrapIcons/BIconX.vue';
 
 export default defineComponent({
   name: 'Application',
@@ -43,14 +43,19 @@ export default defineComponent({
     BIconX,
   },
   props: {
-    title: String,
+    title: {
+      type: String,
+      required: true,
+    },
     width: {
       type: Number,
       default: 800,
+      validator: (w: number) => w >= 0,
     },
     height: {
       type: Number,
       default: 600,
+      validator: (h: number) => h >= 0,
     },
   },
   setup(props) {
