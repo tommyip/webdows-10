@@ -1,6 +1,7 @@
 :root {
   --text-dark-bg: #fff;
   --text-light-bg: #000;
+  --text-accent-light-bg: #4b4b4b;
   --light-bg: #d8d8d8;
   --light-bg-hover: #afafaf;
   --task-bar-height: 45px;

@@ -10,7 +10,7 @@
 <script lang='ts'>
 import { defineComponent, provide } from 'vue';
 import TaskBar from './components/TaskBar.vue';
-import Calculator from './components/Calculator.vue';
+import Calculator from './components/Calculator/Calculator.vue';
 
 export default defineComponent({
   name: 'App',
