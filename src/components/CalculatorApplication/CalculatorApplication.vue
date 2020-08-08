@@ -38,7 +38,7 @@
         <button class="bit-bigger">±</button>
         <button @click="appendDigit(0)" class="number">0</button>
         <button @click="enterFractional" class="bit-bigger">.</button>
-        <button class="bit-bigger">=</button>
+        <button @click="calculate" class="bit-bigger">=</button>
       </div>
     </main>
   </Application>
@@ -109,22 +109,29 @@ export default defineComponent({
     });
 
     const appendDigit = (digit: digit) => {
-      appState.value = { state: 'input' };
-      workingNumber.value.appendDigit(digit);
+      if (appState.value.state !== 'calc') {
+        appState.value = { state: 'input' };
+        workingNumber.value.appendDigit(digit);
+      }
     };
 
     const enterFractional = () => {
-      appState.value = { state: 'input' };
-      workingNumber.value.enterFractional();
+      if (appState.value.state !== 'calc') {
+        appState.value = { state: 'input' };
+        workingNumber.value.enterFractional();
+      }
     };
 
     const clearEntry = () => {
-      appState.value = { state: 'input' };
-      workingNumber.value.unset();
+      if (appState.value.state !== 'calc') {
+        appState.value = { state: 'input' };
+        workingNumber.value.unset();
+      }
     }
 
     const clear = () => {
-      clearEntry();
+      appState.value = { state: 'input' };
+      workingNumber.value.unset();
       workingEquation.value = [];
     };
 
@@ -165,11 +172,13 @@ export default defineComponent({
       }).join('&nbsp;&nbsp;');
     });
 
-    const currentOp = ref<BinOp|undefined>(undefined);
+    const evalEquation = (): number => {
+        const expr = `return ${workingEquation.value.join(' ')};`;
+        return Function(expr)();
+    };
 
     const op = (binOp: BinOp) => {
       const x = workingNumber.value.toNumber();
-      currentOp.value = binOp;
       if (x === undefined) {
         if (isBinOp(workingEquation.value[workingEquation.value.length - 1])) {
           workingEquation.value[workingEquation.value.length - 1] = binOp;
@@ -179,15 +188,25 @@ export default defineComponent({
         workingNumber.value.unset();
         if (binOp === '+' || binOp === '-') {
           // Or last operation is *|/ already
-          const expr = `return ${workingEquation.value.join(' ')};`;
-          console.log(expr);
-          const result = Function(expr)();
+          const result = evalEquation();
           appState.value = { state: "autoCalc", result };
         } else {
           appState.value = { state: "input", ghost: x };
         }
         workingEquation.value.push(binOp);
       }
+    };
+
+    const calculate = () => {
+      const x = workingNumber.value.toNumber();
+      if (x !== undefined) {
+        workingEquation.value.push(x);
+        workingNumber.value.unset();
+      } else if (isBinOp(workingEquation.value[workingEquation.value.length - 1])) {
+        workingEquation.value.pop();
+      }
+      const result = evalEquation();
+      appState.value = { state: "calc", result };
     };
 
     return {
@@ -199,6 +218,7 @@ export default defineComponent({
       clearEntry,
       clear,
       op,
+      calculate,
     };
   },
 });
