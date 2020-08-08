@@ -2,7 +2,7 @@
   <Application title="Calculator" :width="350" :height="450">
     <main>
       <div class="display-container">
-        <!-- <div class="display-equation" v-html="equationDisplay"></div> -->
+        <div class="display-equation" v-html="equationDisplay"></div>
         <div class="display-number">{{ numberDisplay }}</div>
       </div>
       <div class="buttons-container">
@@ -15,29 +15,29 @@
           <sub>𝑥</sub>
         </button>
 
-        <button @click="workingNumber.unset()">CE</button>
+        <button @click="clearEntry">CE</button>
         <button @click="clear">C</button>
         <button @click="workingNumber.deleteDigit()"><b-icon-backspace /></button>
-        <button class="bit-bigger">÷</button>
+        <button @click="op('/')" class="bit-bigger">÷</button>
 
-        <button @click="workingNumber.appendDigit(7)" class="number">7</button>
-        <button @click="workingNumber.appendDigit(8)" class="number">8</button>
-        <button @click="workingNumber.appendDigit(9)" class="number">9</button>
-        <button class="bit-bigger">×</button>
+        <button @click="appendDigit(7)" class="number">7</button>
+        <button @click="appendDigit(8)" class="number">8</button>
+        <button @click="appendDigit(9)" class="number">9</button>
+        <button @click="op('*')" class="bit-bigger">×</button>
 
-        <button @click="workingNumber.appendDigit(4)" class="number">4</button>
-        <button @click="workingNumber.appendDigit(5)" class="number">5</button>
-        <button @click="workingNumber.appendDigit(6)" class="number">6</button>
-        <button class="bit-bigger">−</button>
+        <button @click="appendDigit(4)" class="number">4</button>
+        <button @click="appendDigit(5)" class="number">5</button>
+        <button @click="appendDigit(6)" class="number">6</button>
+        <button @click="op('-')" class="bit-bigger">−</button>
 
-        <button @click="workingNumber.appendDigit(1)" class="number">1</button>
-        <button @click="workingNumber.appendDigit(2)" class="number">2</button>
-        <button @click="workingNumber.appendDigit(3)" class="number">3</button>
-        <button class="bit-bigger">+</button>
+        <button @click="appendDigit(1)" class="number">1</button>
+        <button @click="appendDigit(2)" class="number">2</button>
+        <button @click="appendDigit(3)" class="number">3</button>
+        <button @click="op('+')" class="bit-bigger">+</button>
 
         <button class="bit-bigger">±</button>
-        <button @click="workingNumber.appendDigit(0)" class="number">0</button>
-        <button @click="workingNumber.enterFractional()" class="bit-bigger">.</button>
+        <button @click="appendDigit(0)" class="number">0</button>
+        <button @click="enterFractional" class="bit-bigger">.</button>
         <button class="bit-bigger">=</button>
       </div>
     </main>
@@ -45,46 +45,87 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, ref, computed, onMounted, reactive } from 'vue';
+import { defineComponent, ref, Ref, computed, onMounted } from 'vue';
+import { digit, WorkingNumber, prettify } from './structs';
 import Application from '../Application.vue';
 import BIconBackspace from '../BootstrapIcons/BIconBackspace.vue';
-import { digit, WorkingNumber, prettify } from './structs';
 
-enum BinOp {
-  Add = '+',
-  Sub = '−',
-  Mul = '×',
-  Div = '÷',
+type BinOp = '+' | '-' | '*' | '/';
+
+function displayBinOp(binOp: BinOp) {
+  switch (binOp) {
+    case '+':
+      return '+';
+    case '-':
+      return '-';
+    case '*':
+      return '×';
+    case '/':
+      return '÷';
+  };
 }
+
+function isBinOp(value: any): value is BinOp {
+  return ['+', '-', '*', '/'].includes(value);
+}
+
+type InputState = {
+  state: 'input';
+  ghost?: number;
+};
+
+type AutoCalculatedState = {
+  state: 'autoCalc';
+  result: number;
+};
+
+type CalculatedState = {
+  state: 'calc';
+  result: number;
+};
+
+type AppState = InputState | AutoCalculatedState | CalculatedState;
 
 export default defineComponent({
   name: 'CalculatorApplication',
   components: { Application, BIconBackspace },
   setup() {
-    const workingNumber = reactive(new WorkingNumber());
-    // const workingEquation = ref<(number|BinOp)[]>([]);
+    const appState = ref<AppState>({ state: 'input' });
+    const workingNumber = ref(new WorkingNumber());
+    const workingEquation: Ref<(number|BinOp)[]> = ref([]);
 
     const numberDisplay = computed(() => {
-      return workingNumber.toString();
+      switch (appState.value.state) {
+        case 'input':
+          if (appState.value.ghost === undefined) {
+            return workingNumber.value.toString();
+          } else {
+            return appState.value.ghost;
+          }
+        case 'autoCalc':
+        case 'calc':
+          return appState.value.result.toString();
+      };
     });
 
-    // const equationDisplay = computed(() => {
-    //   return workingEquation.value.join('&nbsp;&nbsp;');
-    // });
+    const appendDigit = (digit: digit) => {
+      appState.value = { state: 'input' };
+      workingNumber.value.appendDigit(digit);
+    };
 
-    /* Handle input */
+    const enterFractional = () => {
+      appState.value = { state: 'input' };
+      workingNumber.value.enterFractional();
+    };
 
-    // const op = (binOp: BinOp) => {
-    //   const x = parseWorkingNumber(workingNumber);
-    //   workingEquation.value.push(x);
-    //   workingEquation.value.push(binOp);
-    //   clearEntry();
-    //   workingNumber.ghost = x;
-    // };
+    const clearEntry = () => {
+      appState.value = { state: 'input' };
+      workingNumber.value.unset();
+    }
 
     const clear = () => {
-      workingNumber.unset();
-      // workingEquation.value = [];
+      clearEntry();
+      workingEquation.value = [];
     };
 
     onMounted(() => {
@@ -100,16 +141,16 @@ export default defineComponent({
           case '7':
           case '8':
           case '9':
-            workingNumber.appendDigit(Number.parseInt(event.key) as digit);
+            appendDigit(Number.parseInt(event.key) as digit);
             break;
           case '.':
-            workingNumber.enterFractional();
+            enterFractional();
             break;
           case 'Backspace':
-            workingNumber.deleteDigit();
+            workingNumber.value.deleteDigit();
             break;
           case 'Delete':
-            workingNumber.unset();
+            clearEntry();
             break;
           case 'Escape':
             clear();
@@ -118,11 +159,46 @@ export default defineComponent({
       });
     });
 
+    const equationDisplay = computed(() => {
+      return workingEquation.value.map((elem: number|BinOp) => {
+        return typeof elem === 'number' ? elem : displayBinOp(elem)
+      }).join('&nbsp;&nbsp;');
+    });
+
+    const currentOp = ref<BinOp|undefined>(undefined);
+
+    const op = (binOp: BinOp) => {
+      const x = workingNumber.value.toNumber();
+      currentOp.value = binOp;
+      if (x === undefined) {
+        if (isBinOp(workingEquation.value[workingEquation.value.length - 1])) {
+          workingEquation.value[workingEquation.value.length - 1] = binOp;
+        }
+      } else {
+        workingEquation.value.push(x);
+        workingNumber.value.unset();
+        if (binOp === '+' || binOp === '-') {
+          // Or last operation is *|/ already
+          const expr = `return ${workingEquation.value.join(' ')};`;
+          console.log(expr);
+          const result = Function(expr)();
+          appState.value = { state: "autoCalc", result };
+        } else {
+          appState.value = { state: "input", ghost: x };
+        }
+        workingEquation.value.push(binOp);
+      }
+    };
+
     return {
+      appendDigit,
+      enterFractional,
       workingNumber,
-      BinOp,
       numberDisplay,
+      equationDisplay,
+      clearEntry,
       clear,
+      op,
     };
   },
 });

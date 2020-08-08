@@ -7,7 +7,6 @@ export type digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 interface InnerNumber {
   integer: number;
   fractional: boolean | digit[];
-  ghost?: number;
 }
 
 interface Number {
@@ -25,10 +24,6 @@ export class WorkingNumber {
     this.n.x = undefined;
   }
 
-  getGhost(): number | undefined {
-    return this.n.x?.ghost;
-  }
-
   toNumber(): number | undefined {
     const x = this.n.x;
     if (x) {
@@ -41,9 +36,6 @@ export class WorkingNumber {
 
   toString(): string {
     if (this.n.x) {
-      if (this.n.x.ghost) {
-        return prettify(this.n.x.ghost);
-      }
       let out = prettify(this.n.x.integer);
       if (this.n.x.fractional !== false) {
         out += '.';
@@ -62,7 +54,6 @@ export class WorkingNumber {
     }
 
     this.n.x = <InnerNumber> this.n.x;  // TS hint
-    this.n.x.ghost = undefined;
 
     if (this.n.x.fractional === true) {
       this.n.x.fractional = [];
@@ -81,7 +72,6 @@ export class WorkingNumber {
     }
 
     this.n.x = <InnerNumber> this.n.x;  // TS hint
-    this.n.x.ghost = undefined;
 
     if (typeof this.n.x.fractional === 'boolean') {
       this.n.x.fractional = !this.n.x.fractional;
