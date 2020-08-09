@@ -16,7 +16,7 @@
         <button class="maximize v-center">
           <b-icon-stop />
         </button>
-        <button class="close v-center">
+        <button @click="onAppExit" class="close v-center">
           <b-icon-x />
         </button>
       </div>
@@ -47,6 +47,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    id: {
+      type: Number,
+      required: true,
+    },
     width: {
       type: Number,
       default: 800,
@@ -58,12 +62,12 @@ export default defineComponent({
       validator: (h: number) => h >= 0,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const title = ref(props.title);
     const width = ref(props.width);
     const height = ref(props.height);
-    const locX = ref(50);
-    const locY = ref(50);
+    const locX = ref(0);
+    const locY = ref(0);
     const isDragging = ref(false);
     const windowStyling = computed(() => {
       return {
@@ -100,12 +104,17 @@ export default defineComponent({
       }
     };
 
+    const onAppExit = () => {
+      emit('app-exit', props.id);
+    };
+
     return {
       title,
       windowStyling,
       onHeaderMouseDown,
       onHeaderMouseMove,
-      onHeaderMouseUp
+      onHeaderMouseUp,
+      onAppExit,
     };
   },
 });
@@ -113,6 +122,7 @@ export default defineComponent({
 
 <style scoped>
 .container {
+  position: absolute;
   background-color: var(--light-bg);
   display: flex;
   flex-flow: column nowrap;

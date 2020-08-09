@@ -1,22 +1,52 @@
 <template>
   <div class="webdows">
-    <div class="desktop">
-      <CalculatorApplication />
+    <div class="desktop" @app-launched="onAppLaunched">
+      <button @click="launchApp('CalculatorApplication')">Calc</button>
+      <div v-for="[id, name] of apps" :key="id">
+        <component
+          :is="name"
+          :id="id"
+          @app-exit="onAppExit"
+        />
+      </div>
     </div>
     <TheTaskBar class="task-bar" />
   </div>
 </template>
 
 <script lang='ts'>
-import { defineComponent, provide } from 'vue';
+import { defineComponent, ref, ComponentPublicInstance } from 'vue';
 import TheTaskBar from './components/TheTaskBar.vue';
+import Application from './components/Application.vue';
 import CalculatorApplication from './components/CalculatorApplication/CalculatorApplication.vue';
+
+type InstanceID = number;
+type AppName = "CalculatorApplication";
 
 export default defineComponent({
   name: 'App',
   components: {
     TheTaskBar,
     CalculatorApplication,
+  },
+  setup() {
+    const apps = ref<Map<InstanceID, AppName>>(new Map());
+
+    let nextId = 0;
+    const launchApp = (appName: AppName) => {
+      apps.value.set(nextId++, appName);
+    };
+
+    const onAppExit = (id: number) => {
+      apps.value.delete(id);
+    };
+
+    return {
+      launchApp,
+      onAppExit,
+      apps,
+      CalculatorApplication,
+    };
   },
 });
 </script>

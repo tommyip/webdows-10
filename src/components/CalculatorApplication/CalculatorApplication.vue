@@ -1,5 +1,5 @@
 <template>
-  <Application title="Calculator" :width="350" :height="450">
+  <Application title="Calculator" :width="350" :height="450" :id="id">
     <main>
       <div class="display-container">
         <div class="display-equation" v-html="equationDisplay"></div>
@@ -89,6 +89,12 @@ type AppState = InputState | AutoCalculatedState | CalculatedState;
 export default defineComponent({
   name: 'CalculatorApplication',
   components: { Application, BIconBackspace },
+  props: {
+    id: {
+      type: Number,
+      required: true,
+    },
+  },
   setup() {
     const appState = ref<AppState>({ state: 'input' });
     const workingNumber = ref(new WorkingNumber());
