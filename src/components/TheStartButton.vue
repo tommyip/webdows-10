@@ -34,6 +34,7 @@ button {
 }
 
 button:hover {
+  fill: var(--windows-blue);
   background-color: var(--light-bg-hover);
 }
 

@@ -1,5 +1,9 @@
 <template>
-  <div class="container" :style="windowStyling">
+  <div
+    v-show="showSelf"
+    class="container"
+    :style="windowStyling"
+   >
     <header>
       <div
         @mousedown.stop="onHeaderMouseDown"
@@ -10,7 +14,7 @@
         <div>{{ title }}</div>
       </div>
       <div class="controls">
-        <button class="minimize v-center">
+        <button @click="onAppMinimized" class="minimize v-center">
           <b-icon-dash />
         </button>
         <button class="maximize v-center">
@@ -30,7 +34,8 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, Ref, computed, inject } from 'vue';
+import { AppInstances, AppInstance } from '../App.vue';
 import BIconDash from './BootstrapIcons/BIconDash.vue';
 import BIconStop from './BootstrapIcons/BIconStop.vue';
 import BIconX from './BootstrapIcons/BIconX.vue';
@@ -77,6 +82,10 @@ export default defineComponent({
         cursor: isDragging.value ? 'grabbing' : 'initial',
       };
     });
+    const appInstances = inject<Ref<AppInstances>>('appInstances');
+    const showSelf = computed(() => {
+      return appInstances?.value.get(props.id)?.visibility !== 'minimized';
+    });
 
     /* Window dragging logic */
     let initialMouseX: number;
@@ -104,16 +113,22 @@ export default defineComponent({
       }
     };
 
+    const onAppMinimized = () => {
+      emit('app-visibility-change', props.id, 'minimized');
+    };
+
     const onAppExit = () => {
       emit('app-exit', props.id);
     };
 
     return {
+      showSelf,
       title,
       windowStyling,
       onHeaderMouseDown,
       onHeaderMouseMove,
       onHeaderMouseUp,
+      onAppMinimized,
       onAppExit,
     };
   },

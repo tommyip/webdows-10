@@ -50,6 +50,9 @@ import { digit, WorkingNumber, prettify } from './structs';
 import Application from '../Application.vue';
 import BIconBackspace from '../BootstrapIcons/BIconBackspace.vue';
 
+import CalculatorIcon from './Icon.vue';
+export { CalculatorIcon };
+
 type BinOp = '+' | '-' | '*' | '/';
 
 function displayBinOp(binOp: BinOp) {
