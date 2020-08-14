@@ -3,14 +3,14 @@
     <TheStartButton />
     <template v-for="[id, instance] of appInstances">
       <button class="task-btn" :key="id" @click="onTaskBtnClick(id)">
-        <component :is="instance.iconComponent" class="icon" />
+        <component :is="instance.value.iconComponent" class="icon" />
       </button>
     </template>
   </div>
 </template>
 
 <script lang='ts'>
-import { defineComponent, inject, PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { InstanceID, AppInstances } from '../App.vue';
 import TheStartButton from './TheStartButton.vue';
 
@@ -22,11 +22,21 @@ export default defineComponent({
     TheStartButton,
     CalculatorIcon,
   },
+  props: {
+    appInstances: {
+      type: Map as PropType<AppInstances>,
+      required: true,
+    },
+  },
+  emits: {
+    'app-visibility-toggle': (id: InstanceID) => true,
+  },
   setup(props, { emit }) {
-    const appInstances = inject('appInstances');
+    const appInstances = props.appInstances;
 
     const onTaskBtnClick = (id: InstanceID) => {
       emit('app-visibility-toggle', id);
+      console.log([...appInstances]);
     };
 
     return {

@@ -34,8 +34,8 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, ref, Ref, computed, inject } from 'vue';
-import { AppInstances, AppInstance } from '../App.vue';
+import { defineComponent, ref, computed, inject } from 'vue';
+import { AppInstance, getInstance, Visibility, InstanceID } from '../App.vue';
 import BIconDash from './BootstrapIcons/BIconDash.vue';
 import BIconStop from './BootstrapIcons/BIconStop.vue';
 import BIconX from './BootstrapIcons/BIconX.vue';
@@ -67,6 +67,10 @@ export default defineComponent({
       validator: (h: number) => h >= 0,
     },
   },
+  emits: {
+    'app-visibility-change': (id: InstanceID, visibility: Visibility) => true,
+    'app-exit': (id: InstanceID) => true,
+  },
   setup(props, { emit }) {
     const title = ref(props.title);
     const width = ref(props.width);
@@ -82,10 +86,8 @@ export default defineComponent({
         cursor: isDragging.value ? 'grabbing' : 'initial',
       };
     });
-    const appInstances = inject<Ref<AppInstances>>('appInstances');
-    const showSelf = computed(() => {
-      return appInstances?.value.get(props.id)?.visibility !== 'minimized';
-    });
+    const self = inject(getInstance)?.(props.id);
+    const showSelf = computed(() => self?.value.visibility !== Visibility.Minimized);
 
     /* Window dragging logic */
     let initialMouseX: number;
@@ -114,7 +116,7 @@ export default defineComponent({
     };
 
     const onAppMinimized = () => {
-      emit('app-visibility-change', props.id, 'minimized');
+      emit('app-visibility-change', props.id, Visibility.Minimized);
     };
 
     const onAppExit = () => {
