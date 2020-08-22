@@ -38,7 +38,8 @@
 
 <script lang='ts'>
 import { defineComponent, ref, computed, inject, PropType } from 'vue';
-import { AppInstance, getInstance, Visibility, InstanceID } from '../App.vue';
+import { InstanceID } from '../utils';
+import { AppInstance, getInstanceSym, Visibility } from '../App.vue';
 import MenuBar, { Menu } from './MenuBar.vue';
 import BIconDash from './BootstrapIcons/BIconDash.vue';
 import BIconStop from './BootstrapIcons/BIconStop.vue';
@@ -54,7 +55,7 @@ export default defineComponent({
   },
   props: {
     id: {
-      type: Number,
+      type: String as PropType<InstanceID>,
       required: true,
     },
     width: {
@@ -79,8 +80,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const width = ref(props.width);
     const height = ref(props.height);
-    const locX = ref(0);
-    const locY = ref(0);
+    const locX = ref((window.innerWidth / 2) - (props.width / 2));
+    const locY = ref((window.innerHeight / 2) - (props.height / 2));
     const isDragging = ref(false);
     const windowStyling = computed(() => {
       return {
@@ -90,7 +91,7 @@ export default defineComponent({
         cursor: isDragging.value ? 'grabbing' : 'initial',
       };
     });
-    const self = inject(getInstance)?.(props.id);
+    const self = inject(getInstanceSym)?.(props.id);
     const showSelf = computed(() => self?.value.visibility !== Visibility.Minimized);
 
     /* Window dragging logic */

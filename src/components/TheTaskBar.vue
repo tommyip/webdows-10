@@ -1,21 +1,35 @@
 <template>
   <div class="task-bar">
     <TheStartButton />
-    <template v-for="[id, instance] of appInstances">
-      <button class="task-btn" :key="id" @click="onTaskBtnClick(id)">
-        <component :is="instance.value.iconComponent" class="icon" />
-      </button>
-    </template>
+    <button
+      v-for="app in pinnedApps"
+      :key="app"
+      @click="onPinnedAppBtnClick(app)"
+      class="app-btn"
+    >
+      <component :is="apps.get(app)?.iconComponent" class="icon" />
+    </button>
+    <button
+      v-for="[id, instance] of appInstances"
+      :key="id"
+      @click="onAppInstanceBtnClick(id)"
+      class="app-btn app-instance-btn"
+    >
+      <component :is="instance.value.iconComponent" class="icon" />
+    </button>
   </div>
 </template>
 
 <script lang='ts'>
-import { defineComponent, PropType } from 'vue';
-import { InstanceID, AppInstances } from '../App.vue';
+import { defineComponent, PropType, inject } from 'vue';
+import { InstanceID } from '../utils';
+import { apps, App, AppInstances, launchAppSym } from '../App.vue';
 import TheStartButton from './TheStartButton.vue';
 
 import CalculatorIcon from './CalculatorApplication/Icon.vue';
 import NotepadIcon from './NotepadApplication/Icon.vue';
+
+const pinnedApps = ['notepad', 'calculator'];
 
 export default defineComponent({
   name: 'TheTaskBar',
@@ -34,16 +48,19 @@ export default defineComponent({
     'app-visibility-toggle': (id: InstanceID) => true,
   },
   setup(props, { emit }) {
-    const appInstances = props.appInstances;
+    const onPinnedAppBtnClick = inject(launchAppSym)!;
 
-    const onTaskBtnClick = (id: InstanceID) => {
+    const appInstances = props.appInstances;
+    const onAppInstanceBtnClick = (id: InstanceID) => {
       emit('app-visibility-toggle', id);
-      console.log([...appInstances]);
     };
 
     return {
+      apps,
+      pinnedApps,
+      onPinnedAppBtnClick,
       appInstances,
-      onTaskBtnClick,
+      onAppInstanceBtnClick,
     };
   },
 });
@@ -65,13 +82,13 @@ export default defineComponent({
   padding: 0;
 }
 
-.task-btn {
+.app-btn {
   position: relative;
   margin-left: 3px;
   margin-right: 3px;
 }
 
-.task-btn::after {
+.app-instance-btn::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -81,7 +98,7 @@ export default defineComponent({
   background-color: var(--windows-blue);
 }
 
-.task-btn > .icon {
+.app-btn > .icon {
   max-width: 60%;
   max-height: 60%;
   width: auto;

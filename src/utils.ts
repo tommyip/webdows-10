@@ -1,6 +1,8 @@
-function genUniqueId(): () => string {
+export type InstanceID = string;
+
+function genUniqueId(): () => InstanceID {
   let id = 0;
-  return function uniqueId(): string {
+  return function uniqueId(): InstanceID {
     return (id++).toString();
   }
 }

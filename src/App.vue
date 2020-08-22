@@ -1,12 +1,10 @@
 <template>
   <div class="webdows">
     <div class="desktop" @app-launched="onAppLaunched">
-      <button @click="launchApp('CalculatorApplication')">Calc</button>
-      <button @click="launchApp('NotepadApplication')">Notepad</button>
       <component
         v-for="[id, instance] of appInstances"
         :key="id"
-        :is="instance.value.app"
+        :is="instance.value.appComponent"
         :id="id"
         @app-visibility-change="onAppVisibilityChange"
         @app-exit="onAppExit"
@@ -22,26 +20,37 @@
 
 <script lang='ts'>
 import { defineComponent, ref, Ref, computed, provide, InjectionKey, ComponentPublicInstance } from 'vue';
+import { InstanceID, uniqueId } from './utils';
 import TheTaskBar from './components/TheTaskBar.vue';
 import Application from './components/Application.vue';
 import CalculatorApplication, { CalculatorIcon } from './components/CalculatorApplication/index.vue';
 import NotepadApplication, { NotepadIcon } from './components/NotepadApplication/index.vue';
 
-export type InstanceID = number;
-export type AppName = "CalculatorApplication";
+type AppComponentName = "CalculatorApplication" | "NotepadApplication";
+export interface App {
+  appComponent: AppComponentName;
+  iconComponent: string;
+}
+
 export enum Visibility {
   Minimized,
   Windowed,
   Maximized,
 };
 
-export interface AppInstance {
-  app: AppName;
+export interface AppInstance extends App {
   visibility: Visibility;
-  iconComponent: string;
 }
+
 export type AppInstances = Map<InstanceID, Ref<AppInstance>>;
-export const getInstance: InjectionKey<(id: InstanceID) => Ref<AppInstance>> = Symbol();
+
+export const getInstanceSym: InjectionKey<(id: InstanceID) => Ref<AppInstance>> = Symbol();
+export const launchAppSym: InjectionKey<(appName: AppComponentName) => void> = Symbol();
+
+export const apps = new Map<string, App>([
+  ['notepad', { appComponent: 'NotepadApplication', iconComponent: 'NotepadIcon' }],
+  ['calculator', { appComponent: 'CalculatorApplication', iconComponent: 'CalculatorIcon' }],
+]);
 
 export default defineComponent({
   name: 'App',
@@ -54,23 +63,25 @@ export default defineComponent({
   },
   setup() {
     const appInstances = ref<AppInstances>(new Map());
-    const getInstanceFn = (id: InstanceID): Ref<AppInstance> => {
+    provide(getInstanceSym, (id: InstanceID): Ref<AppInstance> => {
       const instance = appInstances.value.get(id);
       if (instance) {
         return instance;
       }
       throw new Error(`Instance ${id} does not exist`);
-    };
-    provide(getInstance, getInstanceFn);
+    });
 
-    let nextId = 0;
-    const launchApp = (app: AppName) => {
-      appInstances.value.set(nextId++, ref({
-        app,
-        visibility: Visibility.Windowed,
-        iconComponent: app.replace('Application', 'Icon'),
-      }));
-    };
+    provide(launchAppSym, (appName: string) => {
+      const app = apps.get(appName);
+      if (app) {
+        appInstances.value.set(uniqueId(), ref({
+          ...app,
+          visibility: Visibility.Windowed,
+        }));
+      } else {
+        throw Error(`Trying to launch undefined application ${appName}`);
+      }
+    });
 
     const onAppVisibilityChange = (id: InstanceID, newVisibility: Visibility) => {
       const appInstance = appInstances.value.get(id);
@@ -92,7 +103,6 @@ export default defineComponent({
     };
 
     return {
-      launchApp,
       onAppExit,
       onAppVisibilityChange,
       onAppVisibilityToggle,

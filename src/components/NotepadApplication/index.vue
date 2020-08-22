@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
+import { InstanceID } from '../../utils';
 import Application from '../Application.vue';
 import { Menu } from '../MenuBar.vue';
 
@@ -30,7 +31,7 @@ export default defineComponent({
   },
   props: {
     id: {
-      type: Number,
+      type: String as PropType<InstanceID>,
       required: true,
     },
   },

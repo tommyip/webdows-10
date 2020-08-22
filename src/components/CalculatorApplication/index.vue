@@ -52,7 +52,8 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, ref, Ref, computed, onMounted } from 'vue';
+import { defineComponent, ref, Ref, computed, onMounted, PropType, Prop } from 'vue';
+import { InstanceID } from '../../utils';
 import { digit, WorkingNumber, prettify } from './structs';
 import Application from '../Application.vue';
 import BIconBackspace from '../BootstrapIcons/BIconBackspace.vue';
@@ -101,7 +102,7 @@ export default defineComponent({
   components: { Application, BIconBackspace },
   props: {
     id: {
-      type: Number,
+      type: String as PropType<InstanceID>,
       required: true,
     },
   },

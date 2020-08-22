@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { uniqueId } from '../utils';
+import { InstanceID, uniqueId } from '../utils';
 
 interface MenuItem {
   label: string;
@@ -39,7 +39,7 @@ interface MenuItem {
 }
 
 interface MenuItemWithId extends MenuItem {
-  id: string;
+  id: InstanceID;
 }
 
 interface MenuEntry {
