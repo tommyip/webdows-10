@@ -1,23 +1,31 @@
 <template>
-  <div class="menu-bar">
-    <button
+  <div
+    class="menu-bar"
+    @mouseleave="onMenuUnfocus"
+  >
+    <div
       v-for="entry in menu"
       :key="entry.label"
-      @click="onMenuEntryClick(entry.label)"
-      class="entry-btn"
-      :class="{ selected: activeMenuEntry === entry.label }"
+      class="entry-wrapper"
     >
-      {{ entry.label }}
+      <button
+        @click="onMenuEntryClick(entry.label)"
+        @mouseenter="onMenuEntryEnter(entry.label)"
+        class="entry-btn"
+        :class="{ selected: activeMenuEntry === entry.label }"
+      >
+        {{ entry.label }}
+      </button>
 
-      <div v-if="activeMenuEntry === entry.label" class="entry-container">
-        <div class="entry-items">
-          <div v-for="item in entry.items" :key="item.id">
-            <button v-if="item.label !== ''" class="item-btn">{{ item.label }}</button>
-            <hr v-else class="item-separater" />
-          </div>
+      <div v-if="activeMenuEntry === entry.label" class="entry-menu">
+        <div v-for="item in entry.items" :key="item.id">
+          <button v-if="item.label !== ''" class="item-btn">
+            {{ item.label }}
+          </button>
+          <hr v-else class="item-separater" />
         </div>
       </div>
-    </button>
+    </div>
   </div>
 </template>
 
@@ -60,14 +68,29 @@ export default defineComponent({
     });
 
     const activeMenuEntry = ref<string|null>(null);
+
     const onMenuEntryClick = (entry: string) => {
       activeMenuEntry.value = entry === activeMenuEntry.value ? null : entry;
+    };
+
+    const onMenuEntryEnter = (entry: string) => {
+      if (activeMenuEntry.value !== null) {
+        activeMenuEntry.value = entry;
+      }
+    };
+
+    const onMenuUnfocus = () => {
+      if (activeMenuEntry.value !== null) {
+        activeMenuEntry.value = null;
+      }
     };
 
     return {
       menu,
       activeMenuEntry,
       onMenuEntryClick,
+      onMenuEntryEnter,
+      onMenuUnfocus,
     };
   },
 });
@@ -75,13 +98,17 @@ export default defineComponent({
 
 <style scoped>
 .menu-bar {
-  --entry-btn-margin: 0.05rem;
+  --entry-btn-margin: 2px;
   --entry-btn-height: 1.1rem;
 
   display: flex;
   flex-flow: row nowrap;
 
   font-size: 0.8rem;
+}
+
+.entry-wrapper {
+  position: relative;
 }
 
 .entry-btn {
@@ -98,23 +125,22 @@ export default defineComponent({
   background-color: #dbe9ff;
 }
 
-.entry-container {
+.entry-menu {
   position: absolute;
-  left: -1px;
-  top: var(--entry-btn-height);
+  left: 1px;
   border: 1px solid #bbbbbb;
   background-color: #f1f1f1;
   padding: 2px 0;
 
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
+  min-width: 12rem;
 }
 
-.entry-items > * {
+.entry-menu > div {
   display: flex;
   align-items: center;
   margin-left: 1.5rem;
-  min-width: 12rem;
 }
 
 .item-btn {
