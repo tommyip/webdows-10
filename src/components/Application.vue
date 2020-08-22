@@ -11,7 +11,7 @@
         @mouseup.stop="onHeaderMouseUp"
         class="title-container v-center"
       >
-        <div>{{ title }}</div>
+        <slot name="header">Untitled application</slot>
       </div>
       <div class="controls">
         <button @click="onAppMinimized" class="minimize v-center">
@@ -25,6 +25,9 @@
         </button>
       </div>
     </header>
+    <div v-if="menu">
+      <menu-bar :menu="menu" />
+    </div>
     <main>
       <slot>
         My awesome Webdows application
@@ -34,8 +37,9 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, ref, computed, inject } from 'vue';
+import { defineComponent, ref, computed, inject, PropType } from 'vue';
 import { AppInstance, getInstance, Visibility, InstanceID } from '../App.vue';
+import MenuBar, { Menu } from './MenuBar.vue';
 import BIconDash from './BootstrapIcons/BIconDash.vue';
 import BIconStop from './BootstrapIcons/BIconStop.vue';
 import BIconX from './BootstrapIcons/BIconX.vue';
@@ -43,15 +47,12 @@ import BIconX from './BootstrapIcons/BIconX.vue';
 export default defineComponent({
   name: 'Application',
   components: {
+    MenuBar,
     BIconDash,
     BIconStop,
     BIconX,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
     id: {
       type: Number,
       required: true,
@@ -66,13 +67,16 @@ export default defineComponent({
       default: 600,
       validator: (h: number) => h >= 0,
     },
+    menu: {
+      type: Array as PropType<Menu>,
+      required: false,
+    },
   },
   emits: {
     'app-visibility-change': (id: InstanceID, visibility: Visibility) => true,
     'app-exit': (id: InstanceID) => true,
   },
   setup(props, { emit }) {
-    const title = ref(props.title);
     const width = ref(props.width);
     const height = ref(props.height);
     const locX = ref(0);
@@ -124,8 +128,8 @@ export default defineComponent({
     };
 
     return {
+      menu: props.menu,
       showSelf,
-      title,
       windowStyling,
       onHeaderMouseDown,
       onHeaderMouseMove,
@@ -140,11 +144,11 @@ export default defineComponent({
 <style scoped>
 .container {
   position: absolute;
-  background-color: var(--light-bg);
+  background-color: var(--text-dark-bg);
   display: flex;
   flex-flow: column nowrap;
 
-  box-shadow: 0 0 20px -5px black;
+  box-shadow: 0 0 20px -5px rgb(32, 32, 32);
 }
 
 header,
@@ -161,7 +165,7 @@ header {
 
 .title-container {
   width: 100%;
-  padding-left: 0.75rem;
+  margin-left: 0.5rem;
   font-size: 0.8rem;
   user-select: none;
 }
@@ -185,6 +189,5 @@ header {
 
 main {
   flex: 1;
-  padding: 0.4rem;
 }
 </style>

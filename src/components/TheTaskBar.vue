@@ -15,12 +15,14 @@ import { InstanceID, AppInstances } from '../App.vue';
 import TheStartButton from './TheStartButton.vue';
 
 import CalculatorIcon from './CalculatorApplication/Icon.vue';
+import NotepadIcon from './NotepadApplication/Icon.vue';
 
 export default defineComponent({
   name: 'TheTaskBar',
   components: {
     TheStartButton,
     CalculatorIcon,
+    NotepadIcon,
   },
   props: {
     appInstances: {
@@ -80,7 +82,9 @@ export default defineComponent({
 }
 
 .task-btn > .icon {
-  width: 60%;
-  height: 60%;
+  max-width: 60%;
+  max-height: 60%;
+  width: auto;
+  height: auto;
 }
 </style>

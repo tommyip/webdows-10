@@ -1,5 +1,12 @@
 <template>
-  <Application title="Calculator" :width="350" :height="450" :id="id">
+  <Application
+    :width="350"
+    :height="450"
+    :id="id"
+    class="window"
+  >
+    <template v-slot:header>Calculator</template>
+
     <main>
       <div class="display-container">
         <div class="display-equation" v-html="equationDisplay"></div>
@@ -234,11 +241,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.window {
+  background-color: var(--light-bg);
+}
+
 main {
+  padding: 0.4rem;
+
   display: flex;
   flex-flow: column nowrap;
   align-items: stretch;
-  height: 100%;
+  height: calc(100% - 2 * 0.4rem);
 }
 
 .display-container {

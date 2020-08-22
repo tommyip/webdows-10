@@ -2,6 +2,7 @@
   <div class="webdows">
     <div class="desktop" @app-launched="onAppLaunched">
       <button @click="launchApp('CalculatorApplication')">Calc</button>
+      <button @click="launchApp('NotepadApplication')">Notepad</button>
       <component
         v-for="[id, instance] of appInstances"
         :key="id"
@@ -24,6 +25,7 @@ import { defineComponent, ref, Ref, computed, provide, InjectionKey, ComponentPu
 import TheTaskBar from './components/TheTaskBar.vue';
 import Application from './components/Application.vue';
 import CalculatorApplication, { CalculatorIcon } from './components/CalculatorApplication/index.vue';
+import NotepadApplication, { NotepadIcon } from './components/NotepadApplication/index.vue';
 
 export type InstanceID = number;
 export type AppName = "CalculatorApplication";
@@ -47,6 +49,8 @@ export default defineComponent({
     TheTaskBar,
     CalculatorApplication,
     CalculatorIcon,
+    NotepadApplication,
+    NotepadIcon,
   },
   setup() {
     const appInstances = ref<AppInstances>(new Map());
