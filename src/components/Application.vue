@@ -15,13 +15,13 @@
       </div>
       <div class="controls">
         <button @click="onAppMinimized" class="minimize v-center">
-          <b-icon-dash />
+          <BIconDash />
         </button>
         <button class="maximize v-center">
-          <b-icon-stop />
+          <BIconStop />
         </button>
         <button @click="onAppExit" class="close v-center">
-          <b-icon-x />
+          <BIconX />
         </button>
       </div>
     </header>
@@ -38,12 +38,10 @@
 
 <script lang='ts'>
 import { defineComponent, ref, computed, inject, PropType } from 'vue';
+import { BIconDash, BIconStop, BIconX } from 'bootstrap-icons-vue';
 import { InstanceID } from '../utils';
 import { AppInstance, getInstanceSym, Visibility } from '../App.vue';
 import MenuBar, { Menu } from './MenuBar.vue';
-import BIconDash from './BootstrapIcons/BIconDash.vue';
-import BIconStop from './BootstrapIcons/BIconStop.vue';
-import BIconX from './BootstrapIcons/BIconX.vue';
 
 export default defineComponent({
   name: 'Application',
@@ -182,6 +180,10 @@ header {
 .minimize:hover,
 .maximize:hover {
   background-color: var(--light-bg-hover);
+}
+
+.close {
+  font-size: 1.4rem;
 }
 
 .close:hover {

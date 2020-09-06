@@ -24,7 +24,7 @@
 
         <button @click="clearEntry">CE</button>
         <button @click="clear">C</button>
-        <button @click="workingNumber.deleteDigit()"><b-icon-backspace /></button>
+        <button @click="workingNumber.deleteDigit()"><BIconBackspace /></button>
         <button @click="op('/')" class="bit-bigger">÷</button>
 
         <button @click="appendDigit(7)" class="number">7</button>
@@ -53,10 +53,10 @@
 
 <script lang='ts'>
 import { defineComponent, ref, Ref, computed, onMounted, PropType, Prop } from 'vue';
+import { BIconBackspace } from 'bootstrap-icons-vue';
 import { InstanceID } from '../../utils';
 import { digit, WorkingNumber, prettify } from './structs';
 import Application from '../Application.vue';
-import BIconBackspace from '../BootstrapIcons/BIconBackspace.vue';
 
 import CalculatorIcon from './Icon.vue';
 export { CalculatorIcon };
